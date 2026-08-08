@@ -16,6 +16,13 @@ BINARY="meta-ads"
 die() { printf 'install: %s\n' "$*" >&2; exit 1; }
 info() { printf 'install: %s\n' "$*" >&2; }
 
+# Global, not a local in main(): the EXIT trap runs after main() has returned,
+# so a function-scoped variable would be gone by then and `set -u` would turn a
+# successful install into a non-zero exit.
+TMP=""
+cleanup() { [ -n "$TMP" ] && rm -rf "$TMP"; return 0; }
+trap cleanup EXIT
+
 need() { command -v "$1" >/dev/null 2>&1 || die "$1 is required but not installed"; }
 need curl
 need tar
@@ -36,15 +43,21 @@ detect_platform() {
 }
 
 latest_version() {
-  curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest" \
-    | grep -m1 '"tag_name"' \
-    | sed -E 's/.*"tag_name" *: *"([^"]+)".*/\1/'
+  local body
+  body="$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/latest")" || return 1
+
+  # Deliberately no `grep -m1` or `head -1` here: either would close the pipe
+  # early, curl would die writing to it, and `set -o pipefail` would take the
+  # whole script down with it. `sed -n 1p` reads its input to the end.
+  printf '%s\n' "$body" \
+    | sed -n 's/.*"tag_name"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' \
+    | sed -n '1p'
 }
 
 choose_dir() {
   if [ -n "${INSTALL_DIR:-}" ]; then
     printf '%s' "$INSTALL_DIR"
-  elif [ -w /usr/local/bin ] 2>/dev/null; then
+  elif [ -d /usr/local/bin ] && [ -w /usr/local/bin ]; then
     printf '/usr/local/bin'
   else
     printf '%s/.local/bin' "$HOME"
@@ -52,7 +65,7 @@ choose_dir() {
 }
 
 main() {
-  local platform version dir tmp url
+  local platform version dir url
   platform="$(detect_platform)"
 
   version="${VERSION:-$(latest_version)}"
@@ -64,17 +77,16 @@ main() {
   dir="$(choose_dir)"
   mkdir -p "$dir"
 
-  tmp="$(mktemp -d)"
-  trap 'rm -rf "$tmp"' EXIT
+  TMP="$(mktemp -d)"
 
   info "downloading ${version} for ${platform}"
-  curl -fsSL "$url" -o "$tmp/archive.tar.gz" \
+  curl -fsSL "$url" -o "$TMP/archive.tar.gz" \
     || die "download failed: $url"
 
-  tar -xzf "$tmp/archive.tar.gz" -C "$tmp"
-  [ -f "$tmp/$BINARY" ] || die "archive did not contain $BINARY"
+  tar -xzf "$TMP/archive.tar.gz" -C "$TMP"
+  [ -f "$TMP/$BINARY" ] || die "archive did not contain $BINARY"
 
-  install -m 0755 "$tmp/$BINARY" "$dir/$BINARY"
+  install -m 0755 "$TMP/$BINARY" "$dir/$BINARY"
   info "installed $dir/$BINARY"
 
   case ":$PATH:" in
