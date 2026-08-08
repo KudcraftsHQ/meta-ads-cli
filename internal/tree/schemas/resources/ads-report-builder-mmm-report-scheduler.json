@@ -1,0 +1,1 @@
+{"name":"ads-report-builder-mmm-report-scheduler","class":"AdsReportBuilderMMMReportScheduler","fields":["ad_account_ids","filtering","id","report_name","schedule_frequency"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"franchise-program","class":"FranchiseProgram","fields":["business_asset_group","creator_business","description","end_date","id","name","program_access_type","program_approval_type","program_image_link","program_url","shared_custom_audience","start_date"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

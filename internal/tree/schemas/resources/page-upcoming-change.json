@@ -1,0 +1,1 @@
+{"name":"page-upcoming-change","class":"PageUpcomingChange","fields":["change_type","effective_time","id","page","proposal","timer_status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

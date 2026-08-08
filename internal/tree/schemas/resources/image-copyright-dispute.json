@@ -1,0 +1,1 @@
+{"name":"image-copyright-dispute","class":"ImageCopyrightDispute","fields":["appeal_form_data","dispute_form_data","expiration_time","id","match_id","status","time_appealed","time_created","time_updated"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

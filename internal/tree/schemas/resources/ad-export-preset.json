@@ -1,0 +1,1 @@
+{"name":"ad-export-preset","class":"AdExportPreset","fields":["created_time","fields","id","name","owner","updated_time"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

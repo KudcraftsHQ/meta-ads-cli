@@ -1,0 +1,1 @@
+{"name":"work-experience","class":"WorkExperience","fields":["description","employer","end_date","from","id","location","position","projects","start_date","with"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

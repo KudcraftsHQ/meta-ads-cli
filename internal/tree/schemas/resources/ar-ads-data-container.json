@@ -1,0 +1,1 @@
+{"name":"ar-ads-data-container","class":"ArAdsDataContainer","fields":["camera_facing_override","creation_time","effect","id","is_published","last_modified_time","name"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

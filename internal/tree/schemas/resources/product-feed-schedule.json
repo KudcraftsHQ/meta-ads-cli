@@ -1,0 +1,1 @@
+{"name":"product-feed-schedule","class":"ProductFeedSchedule","fields":["day_of_month","day_of_week","hour","id","interval","interval_count","minute","timezone","url","username"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

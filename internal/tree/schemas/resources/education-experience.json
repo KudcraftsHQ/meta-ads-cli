@@ -1,0 +1,1 @@
+{"name":"education-experience","class":"EducationExperience","fields":["classes","concentration","degree","id","school","type","with","year"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"shop","class":"Shop","fields":["commerce_merchant_settings","fb_sales_channel","id","ig_sales_channel","shop_status","workspace"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

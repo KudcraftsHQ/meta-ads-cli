@@ -1,0 +1,1 @@
+{"name":"ads-report-builder-mmm-report","class":"AdsReportBuilderMMMReport","fields":["async_status","export_format","export_name","export_type","has_seen","id","mmm_status","time_start"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

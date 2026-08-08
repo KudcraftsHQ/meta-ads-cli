@@ -1,0 +1,1 @@
+{"name":"bid-schedule","class":"BidSchedule","fields":["ad_object_id","bid_recurrence_type","bid_timezone","bid_value","id","status","time_end","time_start"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"work-skill","class":"WorkSkill","fields":["id","name"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]},{"name":"get-users","method":"GET","endpoint":"/users","api_type":"EDGE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"product-image","class":"ProductImage","fields":["height","id","image_url","width"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

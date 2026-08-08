@@ -1,0 +1,1 @@
+{"name":"business-image","class":"BusinessImage","fields":["ad_placements_validation_only","business","bytes","creation_time","creative_folder_id","hash","height","id","media_library_url","name","url","url_128","validation_ad_placements","width"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

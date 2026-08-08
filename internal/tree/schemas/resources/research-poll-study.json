@@ -1,0 +1,1 @@
+{"name":"research-poll-study","class":"ResearchPollStudy","fields":["account","id","name"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

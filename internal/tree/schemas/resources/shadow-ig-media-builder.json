@@ -1,0 +1,1 @@
+{"name":"shadow-ig-media-builder","class":"ShadowIGMediaBuilder","fields":["copyright_check_status","id","status","status_code","video_status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

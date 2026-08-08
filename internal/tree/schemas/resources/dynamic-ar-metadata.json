@@ -1,0 +1,1 @@
+{"name":"dynamic-ar-metadata","class":"DynamicARMetadata","fields":["anchor_point","container_effect_enum","effect_icon_url","effect_id","id","platforms","scale_factor","shadow_texture_url","source_url","state","tags","variant_picker_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

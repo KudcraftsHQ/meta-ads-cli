@@ -1,0 +1,1 @@
+{"name":"ads-naming-template","class":"AdsNamingTemplate","fields":["api_fields","api_version","field_order","id","level","separator","template_version","user_defined_fields","value_separator"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

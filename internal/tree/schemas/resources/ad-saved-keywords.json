@@ -1,0 +1,1 @@
+{"name":"ad-saved-keywords","class":"AdSavedKeywords","fields":["account","id","keywords","name","run_status","time_created","time_updated"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

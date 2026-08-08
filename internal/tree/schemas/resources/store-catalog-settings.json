@@ -1,0 +1,1 @@
+{"name":"store-catalog-settings","class":"StoreCatalogSettings","fields":["id","page"],"ops":[{"name":"delete","method":"DELETE","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]},{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

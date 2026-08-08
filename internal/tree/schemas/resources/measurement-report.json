@@ -1,0 +1,1 @@
+{"name":"measurement-report","class":"MeasurementReport","fields":["download_urls","id","metadata","report_type","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

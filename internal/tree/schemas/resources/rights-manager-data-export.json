@@ -1,0 +1,1 @@
+{"name":"rights-manager-data-export","class":"RightsManagerDataExport","fields":["download_uri","export_scope","id","name","record_type","time_range_end","time_range_start"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

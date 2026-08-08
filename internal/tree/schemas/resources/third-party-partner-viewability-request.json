@@ -1,0 +1,1 @@
+{"name":"third-party-partner-viewability-request","class":"ThirdPartyPartnerViewabilityRequest","fields":["created_time","description","ds","hour","id","metric","modified_time","owner_instance_id","platform","status","total_file_count"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"page-leads-access-config","class":"PageLeadsAccessConfig","fields":["id","page"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

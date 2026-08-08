@@ -1,0 +1,1 @@
+{"name":"management-site-link","class":"ManagementSiteLink","fields":["ad_account_id","id","link_domain","link_hash","link_image_hash","link_image_url","link_title","link_type","link_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

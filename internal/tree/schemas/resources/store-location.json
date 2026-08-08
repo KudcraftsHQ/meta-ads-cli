@@ -1,0 +1,1 @@
+{"name":"store-location","class":"StoreLocation","fields":["full_address","hours","id","phone_number","pickup_options","price_range","store_code","zip_code"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

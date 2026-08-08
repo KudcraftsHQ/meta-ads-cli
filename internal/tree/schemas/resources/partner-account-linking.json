@@ -1,0 +1,1 @@
+{"name":"partner-account-linking","class":"PartnerAccountLinking","fields":["adaccount","app","business","externalidentifier","externalidentifieruri","id","partnername","pixel"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"ad-light-campaign","class":"AdLightCampaign","fields":["campaign_id","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

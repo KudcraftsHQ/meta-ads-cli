@@ -1,0 +1,1 @@
+{"name":"ig-media-boost-eligibility-info","class":"IGMediaBoostEligibilityInfo","fields":["boost_ineligible_reason","eligible_to_boost","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

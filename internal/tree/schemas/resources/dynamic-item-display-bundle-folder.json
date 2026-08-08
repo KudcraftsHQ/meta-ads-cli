@@ -1,0 +1,1 @@
+{"name":"dynamic-item-display-bundle-folder","class":"DynamicItemDisplayBundleFolder","fields":["categorization_criteria","id","name","product_catalog","product_set","valid_labels"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

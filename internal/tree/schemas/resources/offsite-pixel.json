@@ -1,0 +1,1 @@
+{"name":"offsite-pixel","class":"OffsitePixel","fields":["creator","id","js_pixel","last_firing_time","name","tag"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[{"name":"value","flag":"value","type":"unsigned int","kind":"int"}]}]}

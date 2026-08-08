@@ -1,0 +1,1 @@
+{"name":"business-creative-folder","class":"BusinessCreativeFolder","fields":["business","creation_time","creative_insight_permissions","description","id","media_library_url","name","owner_business","parent_folder_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"business-video","class":"BusinessVideo","fields":["business","id","media_library_url","name","video"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"geo-gating-policy","class":"GeoGatingPolicy","fields":["after_schedule","exclude_country","id","include_country","name","valid_from","valid_until"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

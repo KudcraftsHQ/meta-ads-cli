@@ -1,0 +1,1 @@
+{"name":"lead-gen-direct-crm-integration-config","class":"LeadGenDirectCRMIntegrationConfig","fields":["auth_id","creation_time","id","lead_filter_settings","lead_gen_data","matched_fields","matched_fields_labels","resources","third_party_app_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

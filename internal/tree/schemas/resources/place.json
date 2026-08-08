@@ -1,0 +1,1 @@
+{"name":"place","class":"Place","fields":["id","location","name","overall_rating"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

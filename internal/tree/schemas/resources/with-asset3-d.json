@@ -1,0 +1,1 @@
+{"name":"with-asset3-d","class":"WithAsset3D","fields":["id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

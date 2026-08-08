@@ -1,0 +1,1 @@
+{"name":"shadow-ig-scheduled-media","class":"ShadowIGScheduledMedia","fields":["caption","id","media_type","media_url","publish_timestamp","thumbnail_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

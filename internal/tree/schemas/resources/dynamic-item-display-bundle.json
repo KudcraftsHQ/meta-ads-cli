@@ -1,0 +1,1 @@
+{"name":"dynamic-item-display-bundle","class":"DynamicItemDisplayBundle","fields":["additional_urls","description","id","name","product_set","text_tokens","url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

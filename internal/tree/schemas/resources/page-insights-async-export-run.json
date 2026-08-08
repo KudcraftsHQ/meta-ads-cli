@@ -1,0 +1,1 @@
+{"name":"page-insights-async-export-run","class":"PageInsightsAsyncExportRun","fields":["data_level","filters","format","gen_report_date","id","report_end_date","report_start_date","sorters","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"cpas-merchant-config","class":"CPASMerchantConfig","fields":["accepted_tos","beta_features","business_outcomes_status","id","is_test_merchant","outcomes_compliance_status","qualified_to_onboard"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

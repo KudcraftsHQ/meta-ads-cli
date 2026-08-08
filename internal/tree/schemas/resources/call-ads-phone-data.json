@@ -1,0 +1,1 @@
+{"name":"call-ads-phone-data","class":"CallAdsPhoneData","fields":["call_ads_phone_data_use_case","callback_variant","destination_website_url","id","page","phone_number"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

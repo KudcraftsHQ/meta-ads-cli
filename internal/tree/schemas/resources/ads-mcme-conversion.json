@@ -1,0 +1,1 @@
+{"name":"ads-mcme-conversion","class":"AdsMcmeConversion","fields":["creation_time","description","id","is_archived","mcme_conversion_type","name","omnichannel_object_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

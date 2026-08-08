@@ -1,0 +1,1 @@
+{"name":"franchise-program-member","class":"FranchiseProgramMember","fields":["business","end_date","id","join_date","member_ad_account","member_user","membership_status","page"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

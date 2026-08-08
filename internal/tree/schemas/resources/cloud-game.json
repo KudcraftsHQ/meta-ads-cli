@@ -1,0 +1,1 @@
+{"name":"cloud-game","class":"CloudGame","fields":["id","name","owner","playable_ad_file_size","playable_ad_orientation","playable_ad_package_name","playable_ad_reject_reason","playable_ad_status","playable_ad_upload_time"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

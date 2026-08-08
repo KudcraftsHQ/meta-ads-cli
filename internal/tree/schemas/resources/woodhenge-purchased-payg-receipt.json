@@ -1,0 +1,1 @@
+{"name":"woodhenge-purchased-payg-receipt","class":"WoodhengePurchasedPAYGReceipt","fields":["id","number_of_subscriptions_purchased","purchase_time","user"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

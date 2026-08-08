@@ -1,0 +1,1 @@
+{"name":"ad-column-sizes","class":"AdColumnSizes","fields":["admarket_account","app_id","columns","id","owner","page","report","tab","view"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

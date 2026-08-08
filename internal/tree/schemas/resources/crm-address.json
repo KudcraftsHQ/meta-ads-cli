@@ -1,0 +1,1 @@
+{"name":"crm-address","class":"CRMAddress","fields":["city","cnpj_tax_id","country","id","postal_code","registration_label","registration_number","state","street1","street2","street3","street4","validation_status","vat_tax_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

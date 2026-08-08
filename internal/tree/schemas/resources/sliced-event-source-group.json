@@ -1,0 +1,1 @@
+{"name":"sliced-event-source-group","class":"SlicedEventSourceGroup","fields":["event_source_group","filter","id","name"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

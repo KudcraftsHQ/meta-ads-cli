@@ -1,0 +1,1 @@
+{"name":"video-copyright-match","class":"VideoCopyrightMatch","fields":["created_date","id","last_modified_user","match_data","match_status","notes","permalink","policy_eval_modify_reasons","ugc_content_format"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

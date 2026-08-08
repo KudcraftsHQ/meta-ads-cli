@@ -1,0 +1,1 @@
+{"name":"third-party-measurement-report-dataset","class":"ThirdPartyMeasurementReportDataset","fields":["category","id","partner","product","schema"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

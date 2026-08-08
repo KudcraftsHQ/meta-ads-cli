@@ -1,0 +1,1 @@
+{"name":"ad-placement","class":"AdPlacement","fields":["bundle_id","display_format","external_placement_id","google_display_format","id","name","placement_group","platform","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

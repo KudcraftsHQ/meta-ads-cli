@@ -1,0 +1,54 @@
+version: 2
+
+project_name: meta-ads-cli
+
+before:
+  hooks:
+    - go mod tidy
+    - go test ./...
+
+builds:
+  - id: meta-ads
+    binary: meta-ads
+    main: ./cmd/meta-ads
+    env:
+      # A static binary is the whole point of shipping this as one file.
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w
+      - -X github.com/KudcraftsHQ/meta-ads-cli/internal/dispatch.Version={{.Version}}
+
+archives:
+  - id: default
+    name_template: >-
+      {{ .ProjectName }}-{{ .Version }}-
+      {{- if eq .Os "darwin" }}macos{{ else }}{{ .Os }}{{ end }}-{{ .Arch }}
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+
+release:
+  draft: false
+  prerelease: auto
+
+# A Homebrew tap is deliberately not configured here. Publishing a formula needs
+# a KudcraftsHQ/homebrew-tap repository and a PAT that can write to it; wiring it
+# up before either exists would just make the first `git tag` fail. Add a `brews:`
+# block once the tap is there.

@@ -1,0 +1,1 @@
+{"name":"organization","class":"Organization","fields":["id","legal_entity_name","owner_business"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

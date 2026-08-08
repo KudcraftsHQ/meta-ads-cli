@@ -1,0 +1,1 @@
+{"name":"live-video-input-stream","class":"LiveVideoInputStream","fields":["dash_ingest_url","dash_preview_url","id","is_master","secure_stream_url","stream_health","stream_id","stream_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[{"name":"target_token","flag":"target-token","type":"string","kind":"string"}]}]}

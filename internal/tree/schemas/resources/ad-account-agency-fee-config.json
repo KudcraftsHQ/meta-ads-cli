@@ -1,0 +1,1 @@
+{"name":"ad-account-agency-fee-config","class":"AdAccountAgencyFeeConfig","fields":["can_add_agency_fee_to_invoice","default_agency_fee_pct","id","is_agency_fee_disabled","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

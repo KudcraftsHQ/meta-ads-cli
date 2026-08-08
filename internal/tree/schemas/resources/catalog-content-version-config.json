@@ -1,0 +1,1 @@
+{"name":"catalog-content-version-config","class":"CatalogContentVersionConfig","fields":["id","name","version"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

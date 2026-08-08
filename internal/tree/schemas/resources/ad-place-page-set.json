@@ -1,0 +1,1 @@
+{"name":"ad-place-page-set","class":"AdPlacePageSet","fields":["account_id","id","location_types","name","pages_count","parent_page","targeted_area_type"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

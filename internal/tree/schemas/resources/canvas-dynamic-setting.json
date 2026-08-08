@@ -1,0 +1,1 @@
+{"name":"canvas-dynamic-setting","class":"CanvasDynamicSetting","fields":["child_documents","id","product_set_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

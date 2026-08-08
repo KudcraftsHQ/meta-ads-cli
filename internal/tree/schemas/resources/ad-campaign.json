@@ -1,0 +1,1 @@
+{"name":"ad-campaign","class":"AdCampaign","fields":["id"],"ops":[{"name":"gendelete","method":"DELETE","endpoint":"/","api_type":"EDGE","allow_file_upload":false,"params":[]}]}

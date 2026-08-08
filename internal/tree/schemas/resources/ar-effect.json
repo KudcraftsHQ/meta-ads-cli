@@ -1,0 +1,1 @@
+{"name":"ar-effect","class":"AREffect","fields":["creation_time","id","last_modified_time","name","status","surfaces"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"cpas-parent-catalog-settings","class":"CPASParentCatalogSettings","fields":["attribution_windows","default_currency","disable_use_as_parent_catalog","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

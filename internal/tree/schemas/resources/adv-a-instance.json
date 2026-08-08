@@ -1,0 +1,1 @@
+{"name":"adv-a-instance","class":"AdvAInstance","fields":["id","instance_type","name","owner_business"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

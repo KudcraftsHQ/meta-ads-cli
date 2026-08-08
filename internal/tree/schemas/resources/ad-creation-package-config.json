@@ -1,0 +1,1 @@
+{"name":"ad-creation-package-config","class":"AdCreationPackageConfig","fields":["api_version","id","is_eligible_for_default_opt_in","objective","package_id","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

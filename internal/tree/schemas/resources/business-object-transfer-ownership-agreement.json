@@ -1,0 +1,1 @@
+{"name":"business-object-transfer-ownership-agreement","class":"BusinessObjectTransferOwnershipAgreement","fields":["id","receiving_business","requesting_business","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

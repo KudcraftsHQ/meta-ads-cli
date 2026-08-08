@@ -1,0 +1,1 @@
+{"name":"business-request","class":"BusinessRequest","fields":["accessor","creation_time","id","object_id","object_type","permitted_tasks","request_status","request_type","requestor"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

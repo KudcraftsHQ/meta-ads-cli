@@ -1,0 +1,1 @@
+{"name":"site-link","class":"SiteLink","fields":["id","link_image_hash","link_title","link_type","link_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

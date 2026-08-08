@@ -1,0 +1,1 @@
+{"name":"app-links","class":"AppLinks","fields":["android","id","ios","ipad","iphone","web","windows","windows_phone","windows_universal"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

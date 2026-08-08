@@ -1,0 +1,1 @@
+{"name":"ig-boost-media-ad","class":"IGBoostMediaAd","fields":["ad_id","ad_status","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

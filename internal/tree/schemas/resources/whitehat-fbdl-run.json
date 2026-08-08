@@ -1,0 +1,1 @@
+{"name":"whitehat-fbdl-run","class":"WhitehatFBDLRun","fields":["creation_time","id","is_pinned","note","result","run_code","status","user_type"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

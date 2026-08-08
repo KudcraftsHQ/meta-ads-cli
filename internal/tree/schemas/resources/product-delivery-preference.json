@@ -1,0 +1,1 @@
+{"name":"product-delivery-preference","class":"ProductDeliveryPreference","fields":["ad_object_id","id","product_priority","product_priority_category"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

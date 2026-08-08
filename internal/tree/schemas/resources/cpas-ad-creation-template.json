@@ -1,0 +1,1 @@
+{"name":"cpas-ad-creation-template","class":"CPASAdCreationTemplate","fields":["description","id","is_unused_template","name","optimization_goal","targeting_type","template_type"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

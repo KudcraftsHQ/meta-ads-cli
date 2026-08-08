@@ -1,0 +1,1 @@
+{"name":"ad-draft","class":"AdDraft","fields":["account_id","api_version","async_request_set","author_id","created_by","draft_version","id","is_active","name","ownership_type","publish_status","state","summary","time_created","time_updated"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

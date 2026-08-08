@@ -1,0 +1,1 @@
+{"name":"ads-pivot-rules","class":"AdsPivotRules","fields":["creation_time","creator","description","id","name","permission","rules","scope","update_by","update_time"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

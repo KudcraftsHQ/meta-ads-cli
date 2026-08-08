@@ -1,0 +1,1 @@
+{"name":"media-copyright-update-record","class":"MediaCopyrightUpdateRecord","fields":["action_types","actor","actor_type","creation_time","id","ownership_countries","whitelisted_accounts"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

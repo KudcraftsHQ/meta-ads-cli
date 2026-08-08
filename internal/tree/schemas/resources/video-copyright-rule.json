@@ -1,0 +1,1 @@
+{"name":"video-copyright-rule","class":"VideoCopyrightRule","fields":["condition_groups","copyrights","created_date","creator","id","is_in_migration","name","validity_status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

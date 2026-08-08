@@ -1,0 +1,1 @@
+{"name":"life-event","class":"LifeEvent","fields":["description","end_time","from","id","is_hidden","start_time","title","updated_time"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]},{"name":"get-likes","method":"GET","endpoint":"/likes","api_type":"EDGE","allow_file_upload":false,"params":[]}]}

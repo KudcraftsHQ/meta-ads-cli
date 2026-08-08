@@ -1,0 +1,1 @@
+{"name":"external-merchant-settings","class":"ExternalMerchantSettings","fields":["connect_woo","external_platform","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

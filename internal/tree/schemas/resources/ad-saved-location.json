@@ -1,0 +1,1 @@
+{"name":"ad-saved-location","class":"AdSavedLocation","fields":["cities","countries","country_groups","custom_locations","geo_markets","id","location_sentences","name","regions","zips"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

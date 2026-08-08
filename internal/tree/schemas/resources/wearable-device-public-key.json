@@ -1,0 +1,1 @@
+{"name":"wearable-device-public-key","class":"WearableDevicePublicKey","fields":["base64_encoded_public_key","creation_time_on_device","device_uuid","id","key_type","owner_id","product_use_case","version"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"signals-iwl-extractor","class":"SignalsIWLExtractor","fields":["domain_uri","event_type","extractor_config","extractor_type","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

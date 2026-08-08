@@ -1,0 +1,1 @@
+{"name":"collaborative-ads-share-settings","class":"CollaborativeAdsShareSettings","fields":["agency_business","id","product_catalog_proxy_id","utm_campaign","utm_medium","utm_source"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

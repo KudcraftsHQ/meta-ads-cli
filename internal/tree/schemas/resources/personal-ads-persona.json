@@ -1,0 +1,1 @@
+{"name":"personal-ads-persona","class":"PersonalAdsPersona","fields":["email","first_name","id","last_name","pending_email"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"brand-safety-downloadable","class":"BrandSafetyDownloadable","fields":["account_context_id","async_job_percent_complete","async_job_status","file_name","id","request_surface","url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

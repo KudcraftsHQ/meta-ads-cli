@@ -1,0 +1,1 @@
+{"name":"calibrator-existing-rule","class":"CalibratorExistingRule","fields":["7d_volume","creation_source","creation_time","creator","event_type","id","rule","rule_type","sample_urls","status","transforms"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

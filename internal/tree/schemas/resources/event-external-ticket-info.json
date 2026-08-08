@@ -1,0 +1,1 @@
+{"name":"event-external-ticket-info","class":"EventExternalTicketInfo","fields":["id","max_sales_price","min_sales_price","sales_status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"live-video-error","class":"LiveVideoError","fields":["creation_time","error_code","error_message","error_type","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

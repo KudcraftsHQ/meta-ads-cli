@@ -1,0 +1,1 @@
+{"name":"mailing-address","class":"MailingAddress","fields":["city","city_page","country","id","postal_code","region","street1","street2"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

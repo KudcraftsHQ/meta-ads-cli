@@ -1,0 +1,1 @@
+{"name":"catalog-website-settings","class":"CatalogWebsiteSettings","fields":["id","is_allowed_to_crawl"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

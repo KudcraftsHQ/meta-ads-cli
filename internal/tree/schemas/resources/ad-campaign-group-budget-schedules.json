@@ -1,0 +1,1 @@
+{"name":"ad-campaign-group-budget-schedules","class":"AdCampaignGroupBudgetSchedules","fields":["id"],"ops":[{"name":"genpost","method":"POST","endpoint":"/budget_schedules","api_type":"EDGE","allow_file_upload":false,"params":[]}]}

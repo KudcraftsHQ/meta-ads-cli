@@ -1,0 +1,1 @@
+{"name":"ad-rule-evaluation-spec","class":"AdRuleEvaluationSpec","fields":["evaluation_type","filters","id","trigger"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

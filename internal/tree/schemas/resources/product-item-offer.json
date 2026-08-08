@@ -1,0 +1,1 @@
+{"name":"product-item-offer","class":"ProductItemOffer","fields":["availability_area","availability_radius","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

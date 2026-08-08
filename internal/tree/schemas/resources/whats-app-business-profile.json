@@ -1,0 +1,1 @@
+{"name":"whats-app-business-profile","class":"WhatsAppBusinessProfile","fields":["id","name_verification","whatsapp_business_api_data"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]},{"name":"update","method":"POST","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

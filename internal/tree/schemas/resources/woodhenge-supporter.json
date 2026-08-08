@@ -1,0 +1,1 @@
+{"name":"woodhenge-supporter","class":"WoodhengeSupporter","fields":["creation_time","id","is_gifted_subscription","most_recent_subscription_time","number_of_months_subscribed","user"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

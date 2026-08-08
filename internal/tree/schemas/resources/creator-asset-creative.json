@@ -1,0 +1,1 @@
+{"name":"creator-asset-creative","class":"CreatorAssetCreative","fields":["id","image_url","moderation_status","product_item_retailer_id","product_url","retailer_id","video_url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

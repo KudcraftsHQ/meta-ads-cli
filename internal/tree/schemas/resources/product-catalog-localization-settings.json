@@ -1,0 +1,1 @@
+{"name":"product-catalog-localization-settings","class":"ProductCatalogLocalizationSettings","fields":["default_country","default_language","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"copyright-ownership-transfer","class":"CopyrightOwnershipTransfer","fields":["assets","has_ownership_been_updated","id","num_assets","receiving_rights_holder_owner","sending_rights_holder_owner","status","transfer_territories","transfer_time"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

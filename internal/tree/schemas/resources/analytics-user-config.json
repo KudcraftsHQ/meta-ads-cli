@@ -1,0 +1,1 @@
+{"name":"analytics-user-config","class":"AnalyticsUserConfig","fields":["demo_app_nux_config","flags","id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"alm-event","class":"ALMEvent","fields":["ad_account_ids","campaign_ids","channel","event","event_time","guidance","guidance_detail","guidance_type","id","parent_advertiser_ids","reseller_business_id","solution_id","sub_channel","user_id"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

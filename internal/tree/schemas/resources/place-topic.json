@@ -1,0 +1,1 @@
+{"name":"place-topic","class":"PlaceTopic","fields":["count","has_children","icon_url","id","name","plural_name","top_subtopic_names"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[{"name":"icon_size","flag":"icon-size","type":"icon_size_enum","kind":"enum"}]}]}

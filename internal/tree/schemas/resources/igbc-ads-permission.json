@@ -1,0 +1,1 @@
+{"name":"igbc-ads-permission","class":"IGBCAdsPermission","fields":["id","permission_type","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

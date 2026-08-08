@@ -1,0 +1,1 @@
+{"name":"partner-center-export-file","class":"PartnerCenterExportFile","fields":["id","report_ds","url"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"product-feed-rules","class":"ProductFeedRules","fields":["id"],"ops":[{"name":"genget","method":"GET","endpoint":"/rules","api_type":"EDGE","allow_file_upload":false,"params":[]}]}

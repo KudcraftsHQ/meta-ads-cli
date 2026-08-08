@@ -1,0 +1,1 @@
+{"name":"ad-rule-execution-spec","class":"AdRuleExecutionSpec","fields":["execution_options","execution_type","id","is_once_off"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

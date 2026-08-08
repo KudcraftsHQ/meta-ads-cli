@@ -1,0 +1,1 @@
+{"name":"ads-pixel-capability-override","class":"AdsPixelCapabilityOverride","fields":["capability","id","override_value","reason"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

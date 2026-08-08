@@ -1,0 +1,1 @@
+{"name":"cpas-advertiser-partnership-recommendation","class":"CPASAdvertiserPartnershipRecommendation","fields":["advertiser_business_id","brand_business_id","brands","countries","id","merchant_business_id","merchant_categories","status","status_reason"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

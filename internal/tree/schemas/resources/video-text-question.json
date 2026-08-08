@@ -1,0 +1,1 @@
+{"name":"video-text-question","class":"VideoTextQuestion","fields":["id","question_target_id","question_text","status"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

@@ -1,0 +1,1 @@
+{"name":"owned-domain","class":"OwnedDomain","fields":["domain_name","id","owner_business","status","verification_code"],"ops":[{"name":"get","method":"GET","endpoint":"/","api_type":"NODE","allow_file_upload":false,"params":[]}]}

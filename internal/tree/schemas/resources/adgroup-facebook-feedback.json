@@ -1,0 +1,1 @@
+{"name":"adgroup-facebook-feedback","class":"AdgroupFacebookFeedback","fields":["id","preview"],"ops":[{"name":"get-comments","method":"GET","endpoint":"/comments","api_type":"EDGE","allow_file_upload":false,"params":[{"name":"order","flag":"order","type":"order_enum","kind":"enum","enum":["chronological","reverse_chronological"]}]}]}
