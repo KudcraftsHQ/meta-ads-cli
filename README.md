@@ -15,6 +15,12 @@ sending it.
 ## Install
 
 ```bash
+brew install --cask KudcraftsHQ/tap/meta-ads-cli
+```
+
+Or without Homebrew:
+
+```bash
 curl -fsSL https://raw.githubusercontent.com/KudcraftsHQ/meta-ads-cli/main/scripts/install.sh | bash
 ```
 
@@ -24,6 +30,9 @@ or build it yourself:
 ```bash
 go install github.com/KudcraftsHQ/meta-ads-cli/cmd/meta-ads@latest
 ```
+
+The Homebrew install brings shell completions with it. Installing any other way, see
+[Shell completion](#shell-completion) below.
 
 ## Authenticate
 

@@ -48,7 +48,51 @@ release:
   draft: false
   prerelease: auto
 
-# A Homebrew tap is deliberately not configured here. Publishing a formula needs
-# a KudcraftsHQ/homebrew-tap repository and a PAT that can write to it; wiring it
-# up before either exists would just make the first `git tag` fail. Add a `brews:`
-# block once the tap is there.
+# Homebrew publishes as a cask, not a formula: GoReleaser deprecated `brews` for
+# pre-compiled binaries, on the grounds that a formula that installs a prebuilt
+# binary was always a fiction. The generated cask covers macOS and Linux.
+homebrew_casks:
+  - name: meta-ads-cli
+    binaries: [meta-ads]
+    directory: Casks
+
+    homepage: https://github.com/KudcraftsHQ/meta-ads-cli
+    description: A command line interface to the Meta Marketing API
+    license: MIT
+
+    url:
+      verified: github.com/KudcraftsHQ/meta-ads-cli/
+
+    # The binaries are unsigned, so macOS quarantines anything downloaded this
+    # way and Gatekeeper refuses to run it. Clearing the attribute on install is
+    # the documented way around that for an unnotarised cask.
+    hooks:
+      post:
+        install: |
+          if OS.mac?
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/meta-ads"]
+          end
+
+    generate_completions_from_executable:
+      executable: meta-ads
+      args: [completion]
+      base_name: meta-ads
+      shell_parameter_format: cobra
+      shells: [bash, zsh, fish]
+
+    repository:
+      owner: KudcraftsHQ
+      name: homebrew-tap
+      branch: main
+      # The workflow's default GITHUB_TOKEN is scoped to this repository only,
+      # so writing to the tap needs a token that can reach it.
+      token: "{{ .Env.HOMEBREW_TAP_TOKEN }}"
+
+    # Empty token means the cask is skipped and the rest of the release still
+    # ships, rather than the whole tag failing.
+    skip_upload: '{{ if .Env.HOMEBREW_TAP_TOKEN }}false{{ else }}true{{ end }}'
+
+    commit_author:
+      name: goreleaser
+      email: noreply@kudcrafts.com
+    commit_msg_template: "meta-ads-cli {{ .Tag }}"
