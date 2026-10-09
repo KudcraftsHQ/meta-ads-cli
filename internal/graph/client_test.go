@@ -272,3 +272,77 @@ func TestEncodeValue(t *testing.T) {
 		}
 	}
 }
+
+func TestQueryInPathIsMergedNotDoubled(t *testing.T) {
+	var gotPath string
+	var gotQuery map[string][]string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath, gotQuery = r.URL.Path, r.URL.Query()
+		w.Write([]byte(`{"id":"1"}`))
+	}))
+	defer srv.Close()
+
+	c := testClient(t, srv)
+	if _, err := c.Do(context.Background(), Request{
+		Method: http.MethodGet, Path: "act_1?fields=account_status,balance&limit=2",
+		Params: map[string]any{"limit": int64(5)},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	if gotPath != "/v26.0/act_1" {
+		t.Errorf("path = %q", gotPath)
+	}
+	if got := gotQuery["fields"]; len(got) != 1 || got[0] != "account_status,balance" {
+		t.Errorf("fields = %q (the token must not ride along inside it)", got)
+	}
+	if got := gotQuery["limit"]; len(got) != 1 || got[0] != "5" {
+		t.Errorf("explicit param should win over the path's: limit = %q", got)
+	}
+	if got := gotQuery["access_token"]; len(got) != 1 || got[0] != "token-abcdefgh" {
+		t.Errorf("access_token = %q", got)
+	}
+
+	if _, err := c.Do(context.Background(), Request{Path: "act_1?access_token=other"}); err == nil {
+		t.Error("a path must not be able to set credentials")
+	}
+}
+
+func TestErrorsNeverContainTheToken(t *testing.T) {
+	// Meta quotes request parameters back in error messages; this server does
+	// the same with the raw query string.
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+		msg, _ := json.Marshal(`Syntax error at: ` + r.URL.RawQuery)
+		w.Write([]byte(`{"error":{"message":` + string(msg) + `,"code":2500,"error_user_msg":` + string(msg) + `}}`))
+	}))
+	defer srv.Close()
+
+	c := testClient(t, srv)
+	c.AppSecret = "app-secret-value"
+	_, err := c.Do(context.Background(), Request{Path: "act_1", Params: map[string]any{"fields": "id"}})
+	if err == nil {
+		t.Fatal("want an error")
+	}
+	for _, secret := range []string{"token-abcdefgh", c.appSecretProof()} {
+		if strings.Contains(err.Error(), secret) {
+			t.Errorf("error leaks a credential: %s", err)
+		}
+	}
+	if !strings.Contains(err.Error(), "Syntax error") {
+		t.Errorf("the rest of Meta's message should survive: %s", err)
+	}
+}
+
+func TestTransportErrorsNeverContainTheToken(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(http.ResponseWriter, *http.Request) {}))
+	c := testClient(t, srv)
+	srv.Close() // connection refused, which *url.Error reports with the full URL
+	c.MaxRetries = 0
+	_, err := c.Do(context.Background(), Request{Path: "act_1"})
+	if err == nil {
+		t.Fatal("want an error")
+	}
+	if strings.Contains(err.Error(), "token-abcdefgh") {
+		t.Errorf("transport error leaks the token: %s", err)
+	}
+}

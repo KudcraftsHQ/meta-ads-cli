@@ -146,6 +146,51 @@ func (c *Client) Values(params map[string]any) (url.Values, error) {
 	return values, nil
 }
 
+// mergePathQuery moves a query string written into the path ("act_1?fields=a,b")
+// into values, so the request carries one well-formed query. Appending ours
+// after a second "?" would make Meta read "?access_token=…" as part of the last
+// parameter's value -- and echo the live token back in its error message.
+// Explicit parameters win over ones in the path, and the path can never set
+// credentials.
+func (c *Client) mergePathQuery(path string, values url.Values) (string, error) {
+	base, query, found := strings.Cut(path, "?")
+	if !found {
+		return path, nil
+	}
+	parsed, err := url.ParseQuery(query)
+	if err != nil {
+		return "", fmt.Errorf("query in path %q: %w", base, err)
+	}
+	for k, vs := range parsed {
+		if k == "access_token" || k == "appsecret_proof" {
+			return "", fmt.Errorf("don't put %s in the path; credentials come from the profile or META_ACCESS_TOKEN", k)
+		}
+		if _, set := values[k]; !set && len(vs) > 0 {
+			values.Set(k, vs[len(vs)-1])
+		}
+	}
+	return base, nil
+}
+
+// scrub masks the credentials this client sends wherever they appear in s.
+// Meta sometimes quotes request parameters back in error messages, and Go's
+// transport errors carry the full request URL, token included.
+func (c *Client) scrub(s string) string {
+	for _, secret := range []string{c.Token, c.appSecretProof(), url.QueryEscape(c.Token)} {
+		if len(secret) >= 8 {
+			s = strings.ReplaceAll(s, secret, redact(secret))
+		}
+	}
+	return s
+}
+
+func (c *Client) scrubError(e *APIError) *APIError {
+	e.Message = c.scrub(e.Message)
+	e.UserMessage = c.scrub(e.UserMessage)
+	e.UserTitle = c.scrub(e.UserTitle)
+	return e
+}
+
 // EncodeValue renders one parameter value the way the Graph API expects it.
 func EncodeValue(v any) (string, error) {
 	switch t := v.(type) {
@@ -186,7 +231,11 @@ func (c *Client) Do(ctx context.Context, req Request) (json.RawMessage, error) {
 	if method == "" {
 		method = http.MethodGet
 	}
-	endpoint := c.URL(req.Path, req.Video)
+	path, err := c.mergePathQuery(req.Path, values)
+	if err != nil {
+		return nil, err
+	}
+	endpoint := c.URL(path, req.Video)
 
 	if c.DryRun {
 		return describeRequest(method, endpoint, values), nil
@@ -295,7 +344,12 @@ func (c *Client) send(ctx context.Context, build func() (*http.Request, error)) 
 		resp, err := c.HTTP.Do(req)
 		if err != nil {
 			if attempt >= c.MaxRetries || ctx.Err() != nil || !isTransportRetryable(err) {
-				return nil, fmt.Errorf("request failed: %w", err)
+				var urlErr *url.Error
+				if errors.As(err, &urlErr) {
+					// *url.Error prints the whole request URL, access token included.
+					return nil, fmt.Errorf("request failed: %s %s: %s", urlErr.Op, safeURL(req.URL), c.scrub(urlErr.Err.Error()))
+				}
+				return nil, fmt.Errorf("request failed: %s", c.scrub(err.Error()))
 			}
 			if waitErr := c.backoff(ctx, attempt, 0); waitErr != nil {
 				return nil, waitErr
@@ -317,7 +371,7 @@ func (c *Client) send(ctx context.Context, build func() (*http.Request, error)) 
 			return json.RawMessage(body), nil
 		}
 
-		apiErr := parseError(resp.StatusCode, body)
+		apiErr := c.scrubError(parseError(resp.StatusCode, body))
 		apiErr.RequestPath = req.URL.Path
 
 		if attempt >= c.MaxRetries || !apiErr.Retryable() {
