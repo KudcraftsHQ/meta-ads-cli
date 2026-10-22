@@ -19,6 +19,7 @@ func run(t *testing.T, srv *httptest.Server, args ...string) (string, string, er
 	t.Setenv("META_ACCESS_TOKEN", "test-token-value")
 	t.Setenv("META_ACCOUNT_ID", "act_1")
 	t.Setenv("META_ADS_CONFIG", t.TempDir()+"/absent.toml")
+	t.Setenv("XDG_CACHE_HOME", t.TempDir())
 	if srv != nil {
 		t.Setenv("META_GRAPH_URL", srv.URL)
 	}
@@ -222,6 +223,7 @@ func TestInsightsRejectsBadLevel(t *testing.T) {
 
 func TestDiscoveryWorksWithoutCredentials(t *testing.T) {
 	t.Setenv("META_ADS_CONFIG", t.TempDir()+"/absent.toml")
+	t.Setenv("XDG_CACHE_HOME", t.TempDir())
 	var out, errOut bytes.Buffer
 	args := []string{"describe", "campaign", "get"}
 	root := NewRoot(args, &out, &errOut)
@@ -281,5 +283,97 @@ func TestAPIErrorMapsToExitCode(t *testing.T) {
 	}
 	if got := graph.ExitCode(err); got != 3 {
 		t.Errorf("exit code = %d, want 3 for an auth failure", got)
+	}
+}
+
+func TestUsageCommand(t *testing.T) {
+	var gotPath, gotFields string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotPath, gotFields = r.URL.Path, r.URL.Query().Get("fields")
+		w.Header().Set("X-Business-Use-Case-Usage", `{"1":[{"type":"ads_insights","call_count":82,"total_cputime":20,"total_time":31,"estimated_time_to_regain_access":0,"ads_api_access_tier":"development_access"}]}`)
+		w.Header().Set("X-Ad-Account-Usage", `{"acc_id_util_pct":9.67,"reset_time_duration":0,"ads_api_access_tier":"development_access"}`)
+		w.Header().Set("X-App-Usage", `{"call_count":5,"total_cputime":1,"total_time":2}`)
+		w.Write([]byte(`{"id":"act_1"}`))
+	}))
+	defer srv.Close()
+
+	out, errOut, err := run(t, srv, "usage")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.HasSuffix(gotPath, "/act_1") || gotFields != "id" {
+		t.Errorf("called %s fields=%s", gotPath, gotFields)
+	}
+	var doc map[string]any
+	if err := json.Unmarshal([]byte(out), &doc); err != nil {
+		t.Fatalf("not JSON: %s", out)
+	}
+	if doc["tier"] != "development_access" || doc["max_pct"].(float64) != 82 || doc["warn"] != true {
+		t.Errorf("report = %s", out)
+	}
+	if strings.Count(errOut, "warning:") != 1 {
+		t.Errorf("stderr should carry one usage warning: %q", errOut)
+	}
+
+	out, _, err = run(t, srv, "usage", "-o", "table")
+	if err != nil || !strings.Contains(out, "business_use_case") || !strings.Contains(out, "ads_insights") {
+		t.Errorf("table = %s (%v)", out, err)
+	}
+}
+
+func TestThrottleExitsFourWithRegainMessage(t *testing.T) {
+	calls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		w.Header().Set("X-Business-Use-Case-Usage", `{"1":[{"type":"ads_insights","call_count":100,"total_cputime":40,"total_time":70,"estimated_time_to_regain_access":23}]}`)
+		w.Header().Set("X-Ad-Account-Usage", `{"acc_id_util_pct":100,"reset_time_duration":1380,"ads_api_access_tier":"development_access"}`)
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(`{"error":{"message":"(#80000) There have been too many calls from this ad-account.","code":80000}}`))
+	}))
+	defer srv.Close()
+
+	_, _, err := run(t, srv, "insights", "--preset", "last_7d")
+	if err == nil {
+		t.Fatal("want a throttle error")
+	}
+	if calls != 1 {
+		t.Errorf("throttle was retried: %d calls", calls)
+	}
+	if graph.ExitCode(err) != 4 || !strings.Contains(err.Error(), "regain in ~23 min (tier: development_access)") {
+		t.Errorf("exit %d: %v", graph.ExitCode(err), err)
+	}
+}
+
+func TestGETCacheAcrossInvocations(t *testing.T) {
+	calls := 0
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		calls++
+		w.Write([]byte(`{"data":[{"id":"1"}]}`))
+	}))
+	defer srv.Close()
+	// run() sets its own XDG_CACHE_HOME; drive NewRoot directly so both
+	// invocations share one cache directory.
+	cacheDir := t.TempDir()
+	invoke := func(args ...string) {
+		t.Setenv("META_ACCESS_TOKEN", "test-token-value")
+		t.Setenv("META_ACCOUNT_ID", "act_1")
+		t.Setenv("META_ADS_CONFIG", t.TempDir()+"/absent.toml")
+		t.Setenv("META_GRAPH_URL", srv.URL)
+		t.Setenv("XDG_CACHE_HOME", cacheDir)
+		var out, errOut bytes.Buffer
+		root := NewRoot(args, &out, &errOut)
+		root.SetArgs(args)
+		if err := root.Execute(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	invoke("raw", "GET", "act_1/ads")
+	invoke("raw", "GET", "act_1/ads")
+	if calls != 1 {
+		t.Errorf("second invocation should hit the disk cache, calls %d", calls)
+	}
+	invoke("raw", "GET", "act_1/ads", "--no-cache")
+	if calls != 2 {
+		t.Errorf("--no-cache should call Meta, calls %d", calls)
 	}
 }

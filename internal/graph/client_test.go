@@ -91,13 +91,13 @@ func TestPostSendsParamsAsForm(t *testing.T) {
 	}
 }
 
-func TestRetriesThrottlingThenSucceeds(t *testing.T) {
+func TestRetriesTransientFailureThenSucceeds(t *testing.T) {
 	calls := 0
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calls++
 		if calls < 3 {
-			w.WriteHeader(http.StatusBadRequest)
-			w.Write([]byte(`{"error":{"message":"rate limited","code":17}}`))
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(`{"error":{"message":"service temporarily unavailable","code":2}}`))
 			return
 		}
 		w.Write([]byte(`{"ok":true}`))
