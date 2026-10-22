@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -65,20 +66,37 @@ const (
 	CodeTemporary        = 2601
 )
 
-// Retryable reports whether re-issuing the request could plausibly succeed.
-// Throttling is the common case: a paginated sweep across a large account will
-// hit a rate limit sooner or later, and failing the whole script for it is
-// worse than waiting a few seconds.
+// Throttled reports whether Meta refused the call for rate limiting: the
+// app/account limits (4, 17, 32, 613), the Marketing API business-use-case
+// limits (80000-80014), or a bare HTTP 429.
+func (e *APIError) Throttled() bool {
+	switch e.Code {
+	case CodeTooManyCalls, CodeRateLimit, CodeAppRateLimit, CodeAccountRateLimit:
+		return true
+	}
+	if e.Code >= 80000 && e.Code <= 80014 {
+		return true
+	}
+	return e.Status == 429
+}
+
+// Retryable reports whether re-issuing the request on the exponential backoff
+// could plausibly succeed. Throttles are deliberately not retryable here: the
+// client waits one out only when Meta says how long it lasts and that fits
+// --max-wait (see Client.MaxWait). Blind retries against a blocked account
+// keep it blocked.
 func (e *APIError) Retryable() bool {
+	if e.Throttled() {
+		return false
+	}
 	if e.IsTransient {
 		return true
 	}
 	switch e.Code {
-	case CodeAPIUnknown, CodeAPIService, CodeTooManyCalls, CodeRateLimit,
-		CodeAppRateLimit, CodeAccountRateLimit, CodeTemporary:
+	case CodeAPIUnknown, CodeAPIService, CodeTemporary:
 		return true
 	}
-	return e.Status == 429 || e.Status >= 500
+	return e.Status >= 500
 }
 
 // Hint turns the more common failures into something actionable.
@@ -92,9 +110,12 @@ func (e *APIError) Hint() string {
 	case CodePermission:
 		return "the token lacks permission for this call -- ads_management or ads_read is usually what is missing"
 	case CodeRateLimit, CodeAccountRateLimit:
-		return "ad account rate limit; --max-retries controls how long the client waits it out"
+		return "ad account rate limit; `meta-ads usage` shows how close the account is, --max-wait how long the client may wait"
 	case CodeAppRateLimit, CodeTooManyCalls:
 		return "app-level rate limit; slow down or spread calls across apps"
+	}
+	if e.Code >= 80000 && e.Code <= 80014 {
+		return "business-use-case rate limit on the ad account; `meta-ads usage` shows the budget and regain time"
 	}
 	if e.Status == 400 && e.Code == 100 {
 		return "parameter rejected -- `meta-ads describe <resource> <op>` lists the accepted parameters and their types"
@@ -108,6 +129,10 @@ func (e *APIError) Hint() string {
 //	2  usage / bad parameters   5  server-side / transient
 //	3  authentication           6  not found
 func ExitCode(err error) int {
+	var throttle *ThrottleError
+	if errors.As(err, &throttle) {
+		return 4
+	}
 	var apiErr *APIError
 	if !asAPIError(err, &apiErr) {
 		return 1
@@ -117,7 +142,8 @@ func ExitCode(err error) int {
 		return 3
 	case CodePermission:
 		return 3
-	case CodeRateLimit, CodeAppRateLimit, CodeAccountRateLimit, CodeTooManyCalls:
+	}
+	if apiErr.Throttled() {
 		return 4
 	}
 	switch {

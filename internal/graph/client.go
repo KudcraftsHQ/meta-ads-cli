@@ -44,7 +44,24 @@ type Client struct {
 	// Trace, when set, receives a line per request and retry.
 	Trace io.Writer
 
-	rand *rand.Rand
+	// MaxWait is the longest throttle the client will sleep through. A
+	// throttle whose regain time (estimated_time_to_regain_access or
+	// Retry-After) fits is waited out exactly once; anything longer, or with
+	// no regain time at all, fails fast with a *ThrottleError. Throttles are
+	// never retried on the exponential backoff: every call made while an ad
+	// account is blocked extends the block for every caller sharing it.
+	MaxWait time.Duration
+	// Warn receives one line, once per client, when any rate-limit metric
+	// reaches UsageWarnPct. It is independent of Trace.
+	Warn io.Writer
+	// Cache, when set, serves repeated GETs from disk within its TTL.
+	Cache *Cache
+	// LastUsage is what Meta's rate-limit headers said on the latest response.
+	LastUsage Usage
+
+	warned bool
+	sleep  func(ctx context.Context, d time.Duration) error
+	rand   *rand.Rand
 }
 
 // Options configure a new client.
@@ -58,7 +75,14 @@ type Options struct {
 	Timeout    time.Duration
 	DryRun     bool
 	Trace      io.Writer
+	MaxWait    time.Duration
+	Warn       io.Writer
+	Cache      *Cache
 }
+
+// DefaultMaxWait is how long a throttle may be before the client stops
+// waiting for it and fails.
+const DefaultMaxWait = 60 * time.Second
 
 // New builds a client, filling in sensible defaults.
 func New(o Options) *Client {
@@ -74,6 +98,9 @@ func New(o Options) *Client {
 	if o.MaxRetries < 0 {
 		o.MaxRetries = 0
 	}
+	if o.MaxWait < 0 {
+		o.MaxWait = 0
+	}
 	return &Client{
 		HTTP:       &http.Client{Timeout: o.Timeout},
 		Token:      o.Token,
@@ -86,6 +113,10 @@ func New(o Options) *Client {
 		RetryCap:   32 * time.Second,
 		DryRun:     o.DryRun,
 		Trace:      o.Trace,
+		MaxWait:    o.MaxWait,
+		Warn:       o.Warn,
+		Cache:      o.Cache,
+		sleep:      sleepCtx,
 		rand:       rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 }
@@ -334,10 +365,18 @@ func (c *Client) Send(ctx context.Context, build func() (*http.Request, error)) 
 }
 
 func (c *Client) send(ctx context.Context, build func() (*http.Request, error)) (json.RawMessage, error) {
+	waitedThrottle := false
 	for attempt := 0; ; attempt++ {
 		req, err := build()
 		if err != nil {
 			return nil, err
+		}
+		isGet := req.Method == http.MethodGet
+		if attempt == 0 && isGet {
+			if body, ok := c.Cache.Get(c.Token, req.URL); ok {
+				c.tracef("%s %s (cached)", req.Method, safeURL(req.URL))
+				return body, nil
+			}
 		}
 		c.tracef("%s %s", req.Method, safeURL(req.URL))
 
@@ -362,17 +401,40 @@ func (c *Client) send(ctx context.Context, build func() (*http.Request, error)) 
 		if readErr != nil {
 			return nil, fmt.Errorf("read response: %w", readErr)
 		}
-		c.traceUsage(resp.Header)
+		usage := c.observeUsage(resp.Header)
+		if !isGet {
+			// A write, successful or not, may have changed what a cached
+			// read would return.
+			c.Cache.Invalidate(c.Token)
+		}
 
 		if resp.StatusCode >= 200 && resp.StatusCode < 300 {
 			if len(body) == 0 {
-				return json.RawMessage(`{}`), nil
+				body = []byte(`{}`)
+			}
+			if isGet {
+				c.Cache.Put(c.Token, req.URL, body)
 			}
 			return json.RawMessage(body), nil
 		}
 
 		apiErr := c.scrubError(parseError(resp.StatusCode, body))
 		apiErr.RequestPath = req.URL.Path
+
+		if regain, account, throttled := throttleOf(apiErr, usage, resp.Header); throttled {
+			if account == "" {
+				account = actPattern.FindString(req.URL.Path)
+			}
+			if !waitedThrottle && regain > 0 && regain <= c.MaxWait && c.MaxRetries > 0 {
+				waitedThrottle = true
+				c.warnf("Meta throttled %s; waiting %s as it asked, then trying once more", orApp(account), regain.Round(time.Second))
+				if err := c.sleep(ctx, regain); err != nil {
+					return nil, err
+				}
+				continue
+			}
+			return nil, &ThrottleError{Account: account, Regain: regain, Tier: usage.Tier(), Err: apiErr}
+		}
 
 		if attempt >= c.MaxRetries || !apiErr.Retryable() {
 			return nil, apiErr
@@ -381,6 +443,35 @@ func (c *Client) send(ctx context.Context, build func() (*http.Request, error)) 
 		if waitErr := c.backoff(ctx, attempt, retryAfter(resp.Header)); waitErr != nil {
 			return nil, waitErr
 		}
+	}
+}
+
+// throttleOf decides whether a failed response is a rate-limit refusal, and
+// how long Meta said to stay away. The regain time is the longest of
+// estimated_time_to_regain_access and Retry-After.
+func throttleOf(e *APIError, u Usage, h http.Header) (time.Duration, string, bool) {
+	regain, account := u.Regain()
+	if ra := retryAfter(h); ra > regain {
+		regain = ra
+	}
+	return regain, account, e.Throttled() || regain > 0
+}
+
+func orApp(account string) string {
+	if account == "" {
+		return "this app"
+	}
+	return "ad account " + account
+}
+
+func sleepCtx(ctx context.Context, d time.Duration) error {
+	timer := time.NewTimer(d)
+	defer timer.Stop()
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-timer.C:
+		return nil
 	}
 }
 
@@ -411,14 +502,7 @@ func (c *Client) backoff(ctx context.Context, attempt int, server time.Duration)
 		wait = wait/2 + jitter
 	}
 	c.tracef("waiting %s before retry %d", wait.Round(time.Millisecond), attempt+1)
-	timer := time.NewTimer(wait)
-	defer timer.Stop()
-	select {
-	case <-ctx.Done():
-		return ctx.Err()
-	case <-timer.C:
-		return nil
-	}
+	return c.sleep(ctx, wait)
 }
 
 func retryAfter(h http.Header) time.Duration {
@@ -462,15 +546,33 @@ func (c *Client) tracef(format string, args ...any) {
 	fmt.Fprintf(c.Trace, "meta-ads: "+format+"\n", args...)
 }
 
-// traceUsage surfaces Meta's rate-limit accounting headers under --verbose.
+// observeUsage records Meta's rate-limit headers, logs them under --verbose,
+// and warns once -- verbose or not -- when any metric is at UsageWarnPct.
 // They are the only warning you get before a throttle.
-func (c *Client) traceUsage(h http.Header) {
-	if c.Trace == nil {
-		return
+func (c *Client) observeUsage(h http.Header) Usage {
+	u := ParseUsage(h)
+	if !u.Empty() {
+		c.LastUsage = u
 	}
-	for _, key := range []string{"X-App-Usage", "X-Ad-Account-Usage", "X-Business-Use-Case-Usage"} {
-		if v := h.Get(key); v != "" {
-			c.tracef("%s: %s", key, v)
+	if c.Trace != nil {
+		for _, key := range []string{"X-App-Usage", "X-Ad-Account-Usage", "X-Business-Use-Case-Usage"} {
+			if v := h.Get(key); v != "" {
+				c.tracef("%s: %s", key, v)
+			}
 		}
 	}
+	if !c.warned {
+		if w := u.Warning(); w != "" {
+			c.warned = true
+			c.warnf("%s", w)
+		}
+	}
+	return u
+}
+
+func (c *Client) warnf(format string, args ...any) {
+	if c.Warn == nil {
+		return
+	}
+	fmt.Fprintf(c.Warn, "meta-ads: "+format+"\n", args...)
 }

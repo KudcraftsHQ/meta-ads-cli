@@ -30,6 +30,9 @@ type globals struct {
 	dryRun      bool
 	verbose     bool
 	maxRetries  int
+	maxWait     time.Duration
+	cacheTTL    time.Duration
+	noCache     bool
 	timeout     time.Duration
 	awsRegion   string
 }
@@ -85,7 +88,10 @@ func NewRoot(args []string, out, errOut io.Writer) *cobra.Command {
 	pf.StringSliceVar(&g.columns, "columns", nil, "column order for table and csv output")
 	pf.BoolVar(&g.dryRun, "dry-run", false, "print the request that would be sent, without sending it")
 	pf.BoolVarP(&g.verbose, "verbose", "v", false, "log requests and rate-limit headers to stderr")
-	pf.IntVar(&g.maxRetries, "max-retries", 3, "how many times to retry a throttled or transient failure")
+	pf.IntVar(&g.maxRetries, "max-retries", 3, "how many times to retry a transient failure (5xx, timeouts); throttles follow --max-wait")
+	pf.DurationVar(&g.maxWait, "max-wait", graph.DefaultMaxWait, "longest throttle to wait out (once); a longer or unknown one fails fast with exit 4")
+	pf.DurationVar(&g.cacheTTL, "cache-ttl", 60*time.Second, "how long GET responses are reused from the disk cache")
+	pf.BoolVar(&g.noCache, "no-cache", false, "always call Meta; don't read or write the GET cache")
 	pf.DurationVar(&g.timeout, "timeout", 2*time.Minute, "per-request timeout")
 	pf.StringVar(&g.awsRegion, "aws-region", "", "AWS region for s3:// sources")
 
@@ -106,6 +112,7 @@ func NewRoot(args []string, out, errOut io.Writer) *cobra.Command {
 	root.AddCommand(
 		InsightsCommand(rt),
 		RawCommand(rt),
+		UsageCommand(rt),
 		ImageCommand(rt),
 		VideoCommand(rt),
 		S3Command(rt),
@@ -172,6 +179,9 @@ func setup(rt *Runtime, g *globals, cmd *cobra.Command) error {
 		Timeout:    g.timeout,
 		DryRun:     g.dryRun,
 		Trace:      trace,
+		MaxWait:    g.maxWait,
+		Warn:       rt.Err,
+		Cache:      newCache(g),
 	})
 	rt.S3 = store.New(g.awsRegion)
 
@@ -183,6 +193,18 @@ func setup(rt *Runtime, g *globals, cmd *cobra.Command) error {
 		}
 	}
 	return nil
+}
+
+// newCache returns the GET cache for this run, or nil when it is off.
+func newCache(g *globals) *graph.Cache {
+	if g.noCache || g.cacheTTL <= 0 || g.dryRun {
+		return nil
+	}
+	dir := graph.DefaultCacheDir()
+	if dir == "" {
+		return nil
+	}
+	return &graph.Cache{Dir: dir, TTL: g.cacheTTL}
 }
 
 // needsToken reports whether a command will actually call the API.

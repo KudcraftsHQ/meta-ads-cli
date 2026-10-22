@@ -97,6 +97,9 @@ FLAG                     TYPE                                 VALUES
 ## Use it
 
 ```bash
+# How much of the ad account's rate-limit budget is left (run before a bulk job)
+meta-ads usage -o table
+
 # Read an account
 meta-ads ad-account get --fields id,name,account_status,currency
 
@@ -162,7 +165,10 @@ meta-ads ad-account create-ad-video --file-url "$url"
 | `--params` | A JSON object merged into the request; explicit flags win |
 | `--fields` | Comma-separated field selection (`--select` is an alias) |
 | `-v, --verbose` | Log requests and Meta's rate-limit headers to stderr |
-| `--max-retries` | How many times to wait out a throttle (default 3) |
+| `--max-retries` | How many times to retry a transient failure: 5xx, timeouts, resets (default 3) |
+| `--max-wait` | Longest throttle the CLI sleeps through, once (default `60s`; `0` never waits) |
+| `--cache-ttl` | How long GET responses are reused from the disk cache (default `60s`) |
+| `--no-cache` | Always call Meta; skip the GET cache |
 | `--profile` | Which config-file profile to use |
 
 Exit codes, so scripts can branch:
@@ -177,9 +183,32 @@ Exit codes, so scripts can branch:
 | `5` | server-side or transient |
 | `6` | not found |
 
-Rate limits are waited out rather than fatal: a throttled call backs off exponentially and
-retries, because a long paginated sweep across a large account will hit one sooner or later
-and failing the whole script for it is worse than waiting.
+### Rate limits
+
+Every caller on an ad account (the apps, the sync jobs, every agent running this CLI) draws on
+one per-account budget, and insights calls weigh the most. On Meta's lowest access tier a
+throttle lasts tens of minutes, and **every call made while throttled extends it for
+everyone**. So the CLI is built to spend fewer calls and to stop when told to:
+
+- **Check before a bulk job.** `meta-ads usage` makes one cheap call (`GET act_<id>?fields=id`,
+  never cached) and prints the parsed `X-Business-Use-Case-Usage`, `X-Ad-Account-Usage` and
+  `X-App-Usage` headers plus the access tier, as JSON or `-o table`.
+- **A warning at 75%.** When any usage metric on any response reaches 75%, one line goes to
+  stderr, with or without `--verbose`.
+- **Throttles are not retried blindly.** On codes 4, 17, 32, 613, 80000–80014 or HTTP 429 the
+  CLI reads `estimated_time_to_regain_access` (and `Retry-After`). If that fits `--max-wait`
+  it sleeps exactly that long, once, and tries again. Longer, or not reported: it fails at once
+  with exit code `4` and a message like
+
+  ```
+  meta-ads: Meta throttled ad account act_123 — regain in ~23 min (tier: development_access)
+  ```
+
+  Transport errors and 5xx still retry on exponential backoff (`--max-retries`).
+- **Repeated reads are cached.** Successful GETs, insights pages included, are kept under
+  `$XDG_CACHE_HOME/meta-ads` for `--cache-ttl` (60 s). Entries sit in a directory per token
+  hash so profiles never mix, the token is never written to disk, and any write (POST/DELETE)
+  clears the cache for that token, so you never read back a status you just changed.
 
 ## Shell completion
 
@@ -209,7 +238,8 @@ CI regenerates on every run and warns when the committed tree has drifted from t
 tools/gen_command_tree.py   walks the Facebook SDK's AST -> schemas
 internal/tree/schemas/      meta.json (130 B) + index.json (200 KB) + 309 resource files
 internal/tree/              embeds them; resolves one resource per invocation
-internal/graph/             HTTP, appsecret_proof, retries, pagination, error mapping
+internal/graph/             HTTP, appsecret_proof, retries, throttles, usage, GET cache,
+                            pagination, error mapping
 internal/dispatch/          schema -> cobra commands, flag coercion, the CLI surface
 internal/upload/ store/     media uploads and S3
 ```
